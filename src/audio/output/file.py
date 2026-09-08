@@ -1,14 +1,14 @@
 import wave
+from typing import Optional
 from .base import AudioOutput
 
 class FileOutput(AudioOutput):
-    def __init__(self, filename, channels=1, sample_width=2, sample_rate=44100):
+    def __init__(self, filename: str, channels: int = 1, sample_width: int = 2, sample_rate: int = 48000):
         self.filename = filename
         self.channels = channels
         self.sample_width = sample_width
         self.sample_rate = sample_rate
-
-        self.file = None
+        self.file: Optional[wave.Wave_write] = None
 
     def start(self) -> None:
         self.file = wave.open(self.filename, 'wb')

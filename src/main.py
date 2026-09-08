@@ -6,8 +6,8 @@ from audio.output import SpeakerOutput
 RAW_DATA_DIR = Path.cwd() / 'data/raw'
 CHUNK_SIZE = 1024
 
-channels = 1
-sample_rate = 44100
+channels = 2
+sample_rate = 48000
 sample_width = 2
 frame_buffer = []
 

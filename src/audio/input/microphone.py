@@ -1,15 +1,16 @@
 import pyaudio
+from typing import Optional
 from .base import AudioInput
 
 class MicrophoneInput(AudioInput):
-    def __init__(self, channels=1, sample_rate=44100, chunk_size=1024, format=pyaudio.paInt16):
+    def __init__(self, channels: int = 1, sample_rate: int = 48000, chunk_size: int = 1024, format: int = pyaudio.paInt16):
         self.channels = channels
         self.sample_rate = sample_rate
         self.chunk_size = chunk_size
         self.format = format
         self.audio_interface = pyaudio.PyAudio()
         self.sample_width = self.audio_interface.get_sample_size(self.format)
-        self.stream = None
+        self.stream: Optional[pyaudio.Stream] = None
 
     def start(self) -> None:
         if self.stream is not None:
@@ -39,4 +40,5 @@ class MicrophoneInput(AudioInput):
         self.stream = None
 
     def close(self):
+        self.stop()
         self.audio_interface.terminate()

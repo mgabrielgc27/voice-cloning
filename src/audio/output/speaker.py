@@ -1,15 +1,16 @@
 import pyaudio
+from typing import Optional
 from .base import AudioOutput
 
 class SpeakerOutput(AudioOutput):
-    def __init__(self, channels=1, sample_rate=44100, sample_width=2, chunk_size=1024):
+    def __init__(self, channels: int = 1, sample_rate: int = 48000, sample_width: int = 2, chunk_size: int = 1024):
         self.channels = channels
         self.sample_rate = sample_rate
         self.chunk_size = chunk_size
         self.sample_width = sample_width
         self.audio_interface = pyaudio.PyAudio()
         self.format = self.audio_interface.get_format_from_width(self.sample_width)
-        self.stream = None
+        self.stream: Optional[pyaudio.Stream] = None
 
     def start(self) -> None:
         if self.stream is not None:

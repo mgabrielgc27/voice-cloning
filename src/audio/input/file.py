@@ -1,14 +1,15 @@
 import wave
+from typing import Optional
 from .base import AudioInput
 
 class FileInput(AudioInput):
-    def __init__(self, filename, chunk_size=1024):
+    def __init__(self, filename: str, chunk_size: int = 1024):
         self.filename = filename
         self.chunk_size = chunk_size
-        self.file = None
-        self.sample_width = None
-        self.channels = None
-        self.sample_rate = None
+        self.file: Optional[wave.Wave_read] = None
+        self.sample_width: Optional[int] = None
+        self.channels: Optional[int] = None
+        self.sample_rate: Optional[int] = None
 
     def start(self) -> None:
         self.file = wave.open(self.filename, 'rb')
