@@ -6,11 +6,39 @@ from audio.output import SpeakerOutput
 RAW_DATA_DIR = Path.cwd() / 'data/raw'
 CHUNK_SIZE = 1024
 
+"""
+declaring variables to configure recording and saving to file functionalities.
+"""
 channels = 2
 sample_rate = 48000
 sample_width = 2
 frame_buffer = []
 
+def save_audio(frame_buffer: list):
+    now = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
+    filename = str(RAW_DATA_DIR / f'{now}.wav')
+    audio_output = FileOutput(filename, channels=channels, sample_width=audio_input.sample_width, sample_rate=sample_rate)
+    audio_output.start()
+    audio_output.write(b''.join(frame_buffer))
+    audio_output.close()
+
+def play_audio(frame_buffer: list):
+    audio_output = SpeakerOutput(channels=channels, sample_rate=sample_rate, sample_width=sample_width, chunk_size=CHUNK_SIZE)
+    audio_output.start()
+
+    print('Playing audio...')
+    while len(frame_buffer):
+        audio_output.write(frame_buffer.pop(0))
+
+    print('Stopped.')
+    audio_output.stop()
+    audio_output.close()
+
+"""
+if the filepath of an wav audio file is passed as an argument in command line,
+then the audio is loaded and played, otherwise the program starts to record
+audio from default speaker and the recording is saved in a wave audio file.
+"""
 if(len(sys.argv) > 1):
     from audio.input import FileInput
 
@@ -57,26 +85,6 @@ else:
 
     thread.join()
 
-    def save_audio(frame_buffer):
-        now = datetime.now().strftime('%d-%m-%Y %H:%M:%S')
-        filename = str(RAW_DATA_DIR / f'{now}.wav')
-        audio_output = FileOutput(filename, channels=channels, sample_width=audio_input.sample_width, sample_rate=sample_rate)
-        audio_output.start()
-        audio_output.write(b''.join(frame_buffer))
-        audio_output.close()
-
     save_audio(frame_buffer)
-
-def play_audio(frame_buffer: list):
-    audio_output = SpeakerOutput(channels=channels, sample_rate=sample_rate, sample_width=sample_width, chunk_size=CHUNK_SIZE)
-    audio_output.start()
-
-    print('Playing audio...')
-    while len(frame_buffer):
-        audio_output.write(frame_buffer.pop(0))
-
-    print('Stopped.')
-    audio_output.stop()
-    audio_output.close()
 
 play_audio(frame_buffer)
